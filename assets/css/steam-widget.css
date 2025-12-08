@@ -1,0 +1,108 @@
+#Steam-Widget {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 12px;
+	color: gray;
+}
+
+#Steam-Widget p,
+#Steam-Widget b,
+#Steam-Widget em,
+#Steam-Widget img{
+	margin: 0;
+	padding: 0;
+	line-height: normal;
+	vertical-align: middle;
+}
+
+#Steam-Widget div > a{
+	display: inherit;
+}
+
+#Steam-Widget a {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	line-height: normal;
+	vertical-align: middle;
+}
+
+#Steam-Widget .table{
+	display: table;
+	border-collapse: collapse;
+	border-width: 0;
+	border-spacing: 0;
+	margin: 0 0 10px 0;
+	padding: 0;
+}
+#Steam-Widget .row{
+	display: table-row;
+}
+#Steam-Widget .column{
+	display: table-cell;
+	vertical-align: middle;
+}
+#Steam-Widget .avatar {
+	padding: 2px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
+#Steam-Widget .message {
+	margin: 0 0 10px 0;
+	padding: 0;
+}
+
+/*PersonaState bg */
+#Steam-Widget .bg.Offline {
+	background-color: #808080;
+}
+#Steam-Widget .bg.InGame{
+	background-color: #83B359;
+}
+#Steam-Widget .bg.Online {
+	background-color: #4787A0;
+}
+#Steam-Widget .bg.Busy {
+	background-color: #4787A0;
+}
+#Steam-Widget .bg.Away {
+	background-color: #4787A0;
+}
+#Steam-Widget .bg.Snooze {
+	background-color: #4787A0;
+}
+#Steam-Widget .bg.LookingToTrade {
+	background-color: #4787A0;
+}
+#Steam-Widget .bg.LookingToPlay {
+	background-color: #4787A0;
+}
+
+/*PersonaState fg*/
+#Steam-Widget .fg.Offline {
+	color: #808080;
+}
+#Steam-Widget .fg.InGame{
+	color: #83B359;
+}
+#Steam-Widget .fg.Online {
+	color: #4787A0;
+}
+#Steam-Widget .fg.Busy {
+	color: #4787A0;
+}
+#Steam-Widget .fg.Away {
+	color: #4787A0;
+}
+#Steam-Widget .fg.Snooze {
+	color: #4787A0;
+}
+#Steam-Widget .fg.LookingToTrade {
+	color: #4787A0;
+}
+#Steam-Widget .fg.LookingToPlay {
+	color: #4787A0;
+}
+
+
