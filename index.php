@@ -42,7 +42,7 @@ class SteamApiWidget extends WP_Widget
 			'description' => __('A simple WordPress widget for your steam profile.', PLUGIN_LOCALE)
 		);
 
-		$this->WP_Widget(PLUGIN_SLUG, __(PLUGIN_NAME, PLUGIN_LOCALE), $widget_option);
+		parent::__construct(PLUGIN_SLUG, __(PLUGIN_NAME, PLUGIN_LOCALE), $widget_option);
 		$this->registerScriptsAndStyles();
 	}
 
