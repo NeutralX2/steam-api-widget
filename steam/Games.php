@@ -20,9 +20,14 @@ class Games
 	 * @constructor
 	 * @param \stdClass $object
 	 */
-	public function __construct(\stdClass $object)
-	{		//RJ - 4/5/19		if (is_array($object->games) || is_object($object->games))		{			foreach ($object->games as $game) {			$this->games[] = new Game($game);			}			}
-	}
+	public function __construct(\stdClass $object)
+	{
+		if (isset($object->games) && (is_array($object->games) || is_object($object->games))) {
+			foreach ($object->games as $game) {
+				$this->games[] = new Game($game);
+			}
+		}
+	}
 
 	/**
 	 * the total number of games the user owns
