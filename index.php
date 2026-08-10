@@ -24,8 +24,8 @@ class SteamApiWidget extends WP_Widget
 	 */
 	private $default_settings = array(
 		'title' => 'Steam',
-		'api_key' => '221D4C81A2190C6AB2837576CC12DE6C',
-		'steam_id' => '76561198017266021',
+		'api_key' => '',
+		'steam_id' => '',
 		'count' => 7,
 		'cache_interval' => 0
 	);
