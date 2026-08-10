@@ -148,6 +148,10 @@ class Api
 			return false;
 		}
 
+		if (!isset($profile_data->response->response->players[0])) {
+			return false;
+		}
+
 		$this->setProfile(new Profile($profile_data->response->response->players[0]));
 		$this->setGames(new Games($game_data->response->response));
 		return true;
