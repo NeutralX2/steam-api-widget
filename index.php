@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
   Description: A simple WordPress widget for your Steam profile. Modified by NeutralX2.com
 
-  Version: 1.0
+  Version: 1.1
 
   Author: Armin Nowacki & NeutralX2
 
