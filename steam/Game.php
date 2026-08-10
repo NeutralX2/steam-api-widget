@@ -114,7 +114,7 @@ class Game
 	public function getLink()
 	{
 		//return "http://steamcommunity.com/app/{$this->getAppId()}";
-		return "http://store.steampowered.com/app/{$this->getAppId()}";
+		return "https://store.steampowered.com/app/{$this->getAppId()}";
 	}
 
 	/**
