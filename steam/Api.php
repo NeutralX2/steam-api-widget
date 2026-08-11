@@ -2,8 +2,8 @@
 
 namespace Steam;
 
-require(__DIR__ . '/Games.php');
-require(__DIR__ . '/Profile.php');
+require __DIR__ . '/Games.php';
+require __DIR__ . '/Profile.php';
 
 /**
  * Class Api
@@ -11,7 +11,6 @@ require(__DIR__ . '/Profile.php');
  */
 class Api
 {
-
 	/**
 	 * @var string $api_key
 	 */
@@ -25,10 +24,12 @@ class Api
 	/**
 	 * @var array $url
 	 */
-	private $url = array(
-		'profile' => 'https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/',
-		'games' => 'https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/'
-	);
+	private $url = [
+		'profile' =>
+			'https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/',
+		'games' =>
+			'https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/',
+	];
 
 	/**
 	 * @var Profile $profile
@@ -123,9 +124,12 @@ class Api
 	 */
 	private function fetch($url, $args)
 	{
-		$response = wp_remote_get(add_query_arg($args, $url), array('timeout' => 3));
+		$response = wp_remote_get(add_query_arg($args, $url), ['timeout' => 3]);
 
-		if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+		if (
+			is_wp_error($response) ||
+			wp_remote_retrieve_response_code($response) !== 200
+		) {
 			return null;
 		}
 
@@ -138,18 +142,18 @@ class Api
 	 */
 	public function getData()
 	{
-		$profile_data = $this->fetch($this->url['profile'], array(
+		$profile_data = $this->fetch($this->url['profile'], [
 			'key' => $this->getApiKey(),
 			'steamids' => $this->getSteamId(),
-			'format' => 'json'
-		));
-		$game_data = $this->fetch($this->url['games'], array(
+			'format' => 'json',
+		]);
+		$game_data = $this->fetch($this->url['games'], [
 			'key' => $this->getApiKey(),
 			'steamid' => $this->getSteamId(),
 			'include_played_free_games' => 0,
 			'include_appinfo' => 1,
-			'format' => 'json'
-		));
+			'format' => 'json',
+		]);
 
 		if (!$profile_data || !$game_data) {
 			return false;
@@ -163,5 +167,4 @@ class Api
 		$this->setGames(new Games($game_data->response));
 		return true;
 	}
-
 }

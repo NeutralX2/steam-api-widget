@@ -8,7 +8,6 @@ namespace Steam;
  */
 class Game
 {
-
 	/**
 	 * @var \stdClass $game
 	 */
@@ -50,7 +49,7 @@ class Game
 	 */
 	public function getName()
 	{
-		return isset($this->game->name) ? $this->game->name : "";
+		return isset($this->game->name) ? $this->game->name : '';
 	}
 
 	/**
@@ -60,7 +59,9 @@ class Game
 	 */
 	public function getPlayTimeTwoWeeks()
 	{
-		return isset($this->game->playtime_2weeks) ? $this->game->playtime_2weeks : 0;
+		return isset($this->game->playtime_2weeks)
+			? $this->game->playtime_2weeks
+			: 0;
 	}
 
 	/**
@@ -71,7 +72,9 @@ class Game
 	 */
 	public function getPlayTimeForever()
 	{
-		return isset($this->game->playtime_forever) ? $this->game->playtime_forever : 0;
+		return isset($this->game->playtime_forever)
+			? $this->game->playtime_forever
+			: 0;
 	}
 
 	/**
@@ -83,7 +86,9 @@ class Game
 	 */
 	public function getImgIconUrl()
 	{
-		return isset($this->game->img_icon_url) ? $this->game->img_icon_url : "";
+		return isset($this->game->img_icon_url)
+			? $this->game->img_icon_url
+			: '';
 	}
 
 	/**
@@ -95,7 +100,9 @@ class Game
 	 */
 	public function getImgLogoUrl()
 	{
-		return isset($this->game->img_logo_url) ? $this->game->img_logo_url : "";
+		return isset($this->game->img_logo_url)
+			? $this->game->img_logo_url
+			: '';
 	}
 
 	/**
@@ -105,7 +112,9 @@ class Game
 	 */
 	public function hasCommunityVisibleStats()
 	{
-		return isset($this->game->has_community_visible_stats) ? $this->game->has_community_visible_stats : false;
+		return isset($this->game->has_community_visible_stats)
+			? $this->game->has_community_visible_stats
+			: false;
 	}
 
 	/**
@@ -133,4 +142,3 @@ class Game
 		return "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{$this->getAppId()}/{$this->getImgIconUrl()}.jpg";
 	}
 }
-
