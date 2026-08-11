@@ -1,5 +1,6 @@
 <?php
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+$fallback_icon = esc_js( esc_url( WP_PLUGIN_URL . '/' . PLUGIN_SLUG . '/assets/img/no-icon.svg' ) );
 ?>
 <div class="table">
     <div class="row">
@@ -44,7 +45,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 			<div class="row">
 				<a href="<?= esc_url($game->getLink()) ?>" target="_blank">
 					<div class="column">
-						<img src="<?= esc_url($game->getImage()) ?>" title="<?= esc_attr($game->getName()) ?>" />
+						<img class="icon" src="<?= esc_url($game->getImage()) ?>" title="<?= esc_attr($game->getName()) ?>" onerror="this.onerror=null;this.src='<?= $fallback_icon ?>';" />
 					</div>
 					<div class="column" style="padding: 0px 5px 0px 5px">
 						<p class="fg <?= esc_attr($profile->getPersonaState()) ?>">&ndash;</p>
