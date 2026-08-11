@@ -122,9 +122,7 @@ class Game
 	 */
 	public function getHeader()
 	{
-		//return "http://cdn.akamai.steamstatic.com/steam/apps/{$this->getAppId()}/header.jpg";
-		//return "https://steamdb.info/static/camo/apps/{$this->getAppId()}/header.jpg";
-		return "https://steamcdn-a.akamaihd.net/steam/apps/{$this->getAppId()}/header.jpg";
+		return "https://cdn.cloudflare.steamstatic.com/steam/apps/{$this->getAppId()}/header.jpg";
 	}
 
 	/**
@@ -132,8 +130,7 @@ class Game
 	 */
 	public function getImage()
 	{
-		//return "http://media.steampowered.com/steamcommunity/public/images/apps/{$this->getAppId()}/{$this->getImgIconUrl()}.jpg";
-		return "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/{$this->getAppId()}/{$this->getImgIconUrl()}.jpg";
+		return "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{$this->getAppId()}/{$this->getImgIconUrl()}.jpg";
 	}
 }
 
