@@ -119,6 +119,16 @@ class SteamApiWidget extends WP_Widget
 
 		}
 
+
+
+		if (!defined('PLUGIN_VERSION')) {
+
+			$plugin_data = get_file_data(__FILE__, array('Version' => 'Version'));
+
+			define('PLUGIN_VERSION', $plugin_data['Version']);
+
+		}
+
 	}
 
 
@@ -159,13 +169,13 @@ class SteamApiWidget extends WP_Widget
 
 			if ($is_script) {
 
-				wp_register_script($name, $url);
+				wp_register_script($name, $url, array(), PLUGIN_VERSION);
 
 				wp_enqueue_script($name);
 
 			} else {
 
-				wp_register_style($name, $url);
+				wp_register_style($name, $url, array(), PLUGIN_VERSION);
 
 				wp_enqueue_style($name);
 
