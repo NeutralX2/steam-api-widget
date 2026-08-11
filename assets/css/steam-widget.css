@@ -104,6 +104,18 @@
 
 }
 
+#Steam-Widget .header {
+
+	display: block;
+
+	width: 100%;
+
+	max-width: 460px;
+
+	height: auto;
+
+}
+
 
 
 #Steam-Widget .message {

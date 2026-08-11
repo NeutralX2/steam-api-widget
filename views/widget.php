@@ -28,7 +28,7 @@ $fallback_icon = esc_js( esc_url( WP_PLUGIN_URL . '/' . PLUGIN_SLUG . '/assets/i
 		<?php $pgame = $games->getGameByAppId($profile->getGameId()) ?>
 		<?php if ($pgame) : ?>
 			<a href="<?= esc_url($pgame->getLink()) ?>" target="_blank" title="<?= esc_attr($pgame->getName()) ?>">
-				<img src="<?= esc_url($pgame->getHeader()) ?>" alt="<?= esc_attr($pgame->getName()) ?>"/>
+				<img class="header" src="<?= esc_url($pgame->getHeader()) ?>" alt="<?= esc_attr($pgame->getName()) ?>"/>
 			</a>
 		<?php else : ?>
 			<div class="message">
