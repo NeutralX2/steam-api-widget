@@ -20,6 +20,10 @@ use Steam\Api;
 
 class SteamApiWidget extends WP_Widget
 {
+	const CRON_HOOK_REFRESH_ALL = 'steam_api_widget_refresh_all';
+	const CRON_HOOK_REFRESH_INSTANCE = 'steam_api_widget_refresh_instance';
+	const CRON_SCHEDULE_ID = 'steam_api_widget_every_minute';
+
 	/**
 	 * @var array $default_settings
 	 */
@@ -32,7 +36,7 @@ class SteamApiWidget extends WP_Widget
 
 		'count' => 7,
 
-		'cache_interval' => 0,
+		'cache_interval' => 5,
 	];
 
 	/**
@@ -41,7 +45,7 @@ class SteamApiWidget extends WP_Widget
 
 	public function __construct()
 	{
-		$this->initPluginConstants();
+		self::initPluginConstants();
 
 		$widget_option = [
 			'classname' => PLUGIN_SLUG,
@@ -61,7 +65,7 @@ class SteamApiWidget extends WP_Widget
 		$this->registerScriptsAndStyles();
 	}
 
-	private function initPluginConstants()
+	public static function initPluginConstants()
 	{
 		if (!defined('PLUGIN_LOCALE')) {
 			define('PLUGIN_LOCALE', 'steam-api-widget-locale');
@@ -156,11 +160,22 @@ class SteamApiWidget extends WP_Widget
 
 		$instance['count'] = strip_tags($new_instance['count']);
 
-		$instance['cache_interval'] = strip_tags(
-			$new_instance['cache_interval']
+		$instance['cache_interval'] = max(
+			1,
+			(int) strip_tags($new_instance['cache_interval'])
 		);
 
 		delete_transient($this->id);
+
+		$number = (int) $this->number;
+
+		if (!wp_next_scheduled(self::CRON_HOOK_REFRESH_INSTANCE, [$number])) {
+			wp_schedule_single_event(
+				time(),
+				self::CRON_HOOK_REFRESH_INSTANCE,
+				[$number]
+			);
+		}
 
 		return $instance;
 	}
@@ -176,13 +191,7 @@ class SteamApiWidget extends WP_Widget
 
 		$title = apply_filters('widget_title', $instance['title']);
 
-		$api_key = $instance['api_key'];
-
-		$steam_id = $instance['steam_id'];
-
 		$count = $instance['count'];
-
-		$cache_interval = $instance['cache_interval'];
 
 		echo $before_widget;
 
@@ -192,29 +201,7 @@ class SteamApiWidget extends WP_Widget
 
 		echo '<div id="Steam-Widget">';
 
-		$data = [];
-
-		$api = new Api($api_key, $steam_id);
-
-		if ($cache_interval > 0) {
-			$data = get_transient($this->id);
-
-			if ($data === false) {
-				if ($api->getData()) {
-					$data['profile'] = $api->getProfile();
-
-					$data['games'] = $api->getGames();
-
-					set_transient($this->id, $data, $cache_interval);
-				}
-			}
-		} else {
-			if ($api->getData()) {
-				$data['profile'] = $api->getProfile();
-
-				$data['games'] = $api->getGames();
-			}
-		}
+		$data = get_transient($this->id);
 
 		if ($data) {
 			$profile = $data['profile'];
@@ -230,8 +217,168 @@ class SteamApiWidget extends WP_Widget
 
 		echo $after_widget;
 	}
+
+	/**
+	 * @param array $schedules
+	 * @return array
+	 */
+
+	public static function addCronSchedule($schedules)
+	{
+		self::initPluginConstants();
+
+		$schedules[self::CRON_SCHEDULE_ID] = [
+			'interval' => MINUTE_IN_SECONDS,
+			'display' => __('Every Minute (Steam API Widget)', PLUGIN_LOCALE),
+		];
+
+		return $schedules;
+	}
+
+	public static function activate()
+	{
+		if (!wp_next_scheduled(self::CRON_HOOK_REFRESH_ALL)) {
+			wp_schedule_event(
+				time(),
+				self::CRON_SCHEDULE_ID,
+				self::CRON_HOOK_REFRESH_ALL
+			);
+		}
+	}
+
+	public static function deactivate()
+	{
+		wp_clear_scheduled_hook(self::CRON_HOOK_REFRESH_ALL);
+	}
+
+	public static function refreshAll()
+	{
+		self::initPluginConstants();
+
+		$settings = get_option('widget_' . PLUGIN_SLUG);
+
+		if (!is_array($settings)) {
+			return;
+		}
+
+		foreach ($settings as $number => $instance) {
+			if (!is_numeric($number)) {
+				continue;
+			}
+
+			self::refreshInstance((int) $number, $instance);
+		}
+	}
+
+	/**
+	 * @param int $number
+	 */
+
+	public static function refreshInstanceByNumber($number)
+	{
+		self::initPluginConstants();
+
+		$settings = get_option('widget_' . PLUGIN_SLUG);
+
+		if (!is_array($settings) || !isset($settings[$number])) {
+			return;
+		}
+
+		self::refreshInstance((int) $number, $settings[$number]);
+	}
+
+	/**
+	 * @param int $number
+	 * @return bool
+	 */
+
+	private static function isWidgetActive($number)
+	{
+		$id = PLUGIN_SLUG . '-' . $number;
+
+		$sidebars_widgets = wp_get_sidebars_widgets();
+
+		foreach ($sidebars_widgets as $sidebar_id => $widget_ids) {
+			// wp_inactive_widgets is a real widget-ID array like any sidebar,
+			// so it can only be excluded by name. Other keys (e.g. array_version)
+			// aren't sidebars at all and are excluded by not being arrays.
+			if ($sidebar_id === 'wp_inactive_widgets' || !is_array($widget_ids)) {
+				continue;
+			}
+
+			if (in_array($id, $widget_ids, true)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param int $number
+	 * @param array $instance
+	 */
+
+	private static function refreshInstance($number, $instance)
+	{
+		if (!self::isWidgetActive($number)) {
+			return;
+		}
+
+		$id = PLUGIN_SLUG . '-' . $number;
+
+		if (get_transient($id) !== false) {
+			return;
+		}
+
+		$api_key = isset($instance['api_key']) ? $instance['api_key'] : '';
+
+		$steam_id = isset($instance['steam_id']) ? $instance['steam_id'] : '';
+
+		if (empty($api_key) || empty($steam_id)) {
+			return;
+		}
+
+		$minutes = max(
+			1,
+			isset($instance['cache_interval'])
+				? (int) $instance['cache_interval']
+				: 1
+		);
+
+		$api = new Api($api_key, $steam_id);
+
+		if ($api->getData()) {
+			set_transient(
+				$id,
+				[
+					'profile' => $api->getProfile(),
+					'games' => $api->getGames(),
+				],
+				$minutes * MINUTE_IN_SECONDS
+			);
+		}
+	}
 }
+
+SteamApiWidget::initPluginConstants();
 
 add_action('widgets_init', function () {
 	register_widget('SteamApiWidget');
 });
+
+add_filter('cron_schedules', ['SteamApiWidget', 'addCronSchedule']);
+
+add_action(SteamApiWidget::CRON_HOOK_REFRESH_ALL, [
+	'SteamApiWidget',
+	'refreshAll',
+]);
+
+add_action(SteamApiWidget::CRON_HOOK_REFRESH_INSTANCE, [
+	'SteamApiWidget',
+	'refreshInstanceByNumber',
+]);
+
+register_activation_hook(__FILE__, ['SteamApiWidget', 'activate']);
+
+register_deactivation_hook(__FILE__, ['SteamApiWidget', 'deactivate']);

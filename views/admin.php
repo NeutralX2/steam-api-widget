@@ -24,6 +24,6 @@ defined('ABSPATH') or die('No script kiddies please!');
 </p>
 
 <p>
-    <label for="<?php echo $this->get_field_id('cache_interval'); ?>"><?php _e('cache refresh interval (s):', PLUGIN_LOCALE); ?></label>
-    <input class="widefat" id="<?php echo $this->get_field_id('cache_interval'); ?>" name="<?php echo $this->get_field_name('cache_interval'); ?>" type="text" value="<?php echo $cache_interval; ?>" />
+    <label for="<?php echo $this->get_field_id('cache_interval'); ?>"><?php _e('Cache refresh interval (minutes, min. 1):', PLUGIN_LOCALE); ?></label>
+    <input class="widefat" id="<?php echo $this->get_field_id('cache_interval'); ?>" name="<?php echo $this->get_field_name('cache_interval'); ?>" type="number" min="1" step="1" value="<?php echo $cache_interval; ?>" />
 </p>
