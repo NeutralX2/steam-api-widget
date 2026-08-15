@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH') or die('No script kiddies please!');
+defined('ABSPATH') || exit;
 ?>
 <p>
     <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Widget Title', PLUGIN_LOCALE); ?></label>

@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+defined('ABSPATH') || exit;
 $fallback_icon = esc_js( esc_url( WP_PLUGIN_URL . '/' . PLUGIN_SLUG . '/assets/img/no-icon.svg' ) );
 ?>
 <div class="table">

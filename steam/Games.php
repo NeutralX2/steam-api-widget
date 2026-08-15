@@ -2,6 +2,8 @@
 
 namespace Steam;
 
+defined('ABSPATH') || exit;
+
 require __DIR__ . '/Game.php';
 
 /**

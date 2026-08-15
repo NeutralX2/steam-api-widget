@@ -2,6 +2,8 @@
 
 namespace Steam;
 
+defined('ABSPATH') || exit;
+
 /**
  * Class Profile
  * @package Steam

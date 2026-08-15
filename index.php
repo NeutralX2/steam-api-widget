@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH') or die('No script kiddies please!');
+defined('ABSPATH') || exit;
 
 /*
   Plugin Name: Steam-Api-Widget-Redux
