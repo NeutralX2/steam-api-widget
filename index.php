@@ -209,6 +209,8 @@ class SteamApiWidget extends WP_Widget
 			$games = $data['games'];
 
 			include WP_PLUGIN_DIR . '/' . PLUGIN_SLUG . '/views/widget.php';
+		} elseif ($this->number === -1) {
+			echo '<p>Preview is not available in the widget editor. <br /> Check the live page instead.</p>';
 		} else {
 			echo '<p>Steam servers are currently <br /> unavailable or too busy.</p>';
 		}
