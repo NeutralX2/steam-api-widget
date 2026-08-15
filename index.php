@@ -253,6 +253,42 @@ class SteamApiWidget extends WP_Widget
 		wp_clear_scheduled_hook(self::CRON_HOOK_REFRESH_ALL);
 	}
 
+	/**
+	 * @param string $id
+	 * @param string $sidebar_id
+	 * @param string $id_base
+	 */
+
+	public static function onWidgetDeleted($id, $sidebar_id, $id_base)
+	{
+		self::initPluginConstants();
+
+		if ($id_base !== PLUGIN_SLUG) {
+			return;
+		}
+
+		delete_transient($id);
+	}
+
+	public static function uninstall()
+	{
+		self::initPluginConstants();
+
+		$settings = get_option('widget_' . PLUGIN_SLUG);
+
+		if (is_array($settings)) {
+			foreach ($settings as $number => $instance) {
+				if (!is_numeric($number)) {
+					continue;
+				}
+
+				delete_transient(PLUGIN_SLUG . '-' . $number);
+			}
+		}
+
+		delete_option('widget_' . PLUGIN_SLUG);
+	}
+
 	public static function refreshAll()
 	{
 		self::initPluginConstants();
@@ -329,7 +365,20 @@ class SteamApiWidget extends WP_Widget
 
 		$id = PLUGIN_SLUG . '-' . $number;
 
-		if (get_transient($id) !== false) {
+		$minutes = max(
+			1,
+			isset($instance['cache_interval'])
+				? (int) $instance['cache_interval']
+				: 1
+		);
+
+		$cached = get_transient($id);
+
+		if (
+			$cached &&
+			isset($cached['refreshed_at']) &&
+			time() - $cached['refreshed_at'] < $minutes * MINUTE_IN_SECONDS
+		) {
 			return;
 		}
 
@@ -341,13 +390,6 @@ class SteamApiWidget extends WP_Widget
 			return;
 		}
 
-		$minutes = max(
-			1,
-			isset($instance['cache_interval'])
-				? (int) $instance['cache_interval']
-				: 1
-		);
-
 		$api = new Api($api_key, $steam_id);
 
 		if ($api->getData()) {
@@ -356,8 +398,9 @@ class SteamApiWidget extends WP_Widget
 				[
 					'profile' => $api->getProfile(),
 					'games' => $api->getGames(),
+					'refreshed_at' => time(),
 				],
-				$minutes * MINUTE_IN_SECONDS
+				0
 			);
 		}
 	}
@@ -381,6 +424,10 @@ add_action(SteamApiWidget::CRON_HOOK_REFRESH_INSTANCE, [
 	'refreshInstanceByNumber',
 ]);
 
+add_action('delete_widget', ['SteamApiWidget', 'onWidgetDeleted'], 10, 3);
+
 register_activation_hook(__FILE__, ['SteamApiWidget', 'activate']);
 
 register_deactivation_hook(__FILE__, ['SteamApiWidget', 'deactivate']);
+
+register_uninstall_hook(__FILE__, ['SteamApiWidget', 'uninstall']);
