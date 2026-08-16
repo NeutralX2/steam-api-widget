@@ -1,11 +1,11 @@
 <?php
-defined('ABSPATH') || exit;
+defined('ABSPATH') || exit();
 
 /*
   Plugin Name: Steam-Api-Widget-Redux
   Plugin URI: http://neutralx2.com
   Description: A simple WordPress widget for your Steam profile. Modified by NeutralX2.com
-  Version: 2.0
+  Version: 2.1
   Author: Armin Nowacki & NeutralX2
   License: GPLv2 or later
  */
@@ -170,11 +170,9 @@ class SteamApiWidget extends WP_Widget
 		$number = (int) $this->number;
 
 		if (!wp_next_scheduled(self::CRON_HOOK_REFRESH_INSTANCE, [$number])) {
-			wp_schedule_single_event(
-				time(),
-				self::CRON_HOOK_REFRESH_INSTANCE,
-				[$number]
-			);
+			wp_schedule_single_event(time(), self::CRON_HOOK_REFRESH_INSTANCE, [
+				$number,
+			]);
 		}
 
 		return $instance;
@@ -340,7 +338,10 @@ class SteamApiWidget extends WP_Widget
 			// wp_inactive_widgets is a real widget-ID array like any sidebar,
 			// so it can only be excluded by name. Other keys (e.g. array_version)
 			// aren't sidebars at all and are excluded by not being arrays.
-			if ($sidebar_id === 'wp_inactive_widgets' || !is_array($widget_ids)) {
+			if (
+				$sidebar_id === 'wp_inactive_widgets' ||
+				!is_array($widget_ids)
+			) {
 				continue;
 			}
 
